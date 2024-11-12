@@ -10,6 +10,7 @@ import { v2 as cloudinary } from "cloudinary";
 import myHotelRoutes from "./routes/my-hotels";
 import hotelRoutes from "./routes/hotels";
 import bookingRoutes from "./routes/my-bookings";
+import job from "./cron/cron"
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -20,6 +21,8 @@ cloudinary.config({
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string).then(()=> {
   console.log("Connected to Database: ",process.env.MONGODB_CONNECTION_STRING);
 });
+
+
 
 const app = express();
 app.use(cookieParser());
@@ -43,6 +46,8 @@ app.use("/api/my-bookings", bookingRoutes);
 app.get("*", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));
 });
+
+job.start();
 
 app.listen(7000, () => {
   console.log("server running on localhost:7000");
